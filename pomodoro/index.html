@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>25:00 - Odaklanma | Pomodoro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body data-mode="pomodoro">
+    <div class="background-glow"></div>
+
+    <div class="container">
+        <!-- Üst Bar -->
+        <header class="header">
+            <div class="logo">
+                <span class="logo-icon">🍅</span>
+                <h1>PomoFocus</h1>
+            </div>
+            <div class="header-actions">
+                <button id="soundToggleBtn" class="icon-btn" title="Sesi Aç/Kapat" aria-label="Sesi Aç/Kapat">
+                    <svg id="soundOnIcon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
+                    <svg id="soundOffIcon" class="hidden" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>
+                </button>
+                <button id="settingsBtn" class="icon-btn" title="Ayarlar" aria-label="Ayarlar">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- Ana Zamanlayıcı Kartı -->
+        <main class="timer-card">
+            <!-- Mod Seçici -->
+            <div class="mode-tabs" role="tablist">
+                <button class="mode-tab active" data-mode="pomodoro" role="tab" aria-selected="true">Odaklanma</button>
+                <button class="mode-tab" data-mode="shortBreak" role="tab" aria-selected="false">Kısa Mola</button>
+                <button class="mode-tab" data-mode="longBreak" role="tab" aria-selected="false">Uzun Mola</button>
+            </div>
+
+            <!-- Dairesel Sayaç -->
+            <div class="timer-circle-wrapper">
+                <svg class="progress-ring" width="280" height="280" viewBox="0 0 280 280">
+                    <circle class="progress-ring-bg" cx="140" cy="140" r="126" />
+                    <circle id="progressRingBar" class="progress-ring-bar" cx="140" cy="140" r="126" />
+                </svg>
+                <div class="timer-display">
+                    <span id="timeDisplay" class="time-text">25:00</span>
+                    <span id="sessionLabel" class="session-label">#1 Odaklanma Zamanı</span>
+                </div>
+            </div>
+
+            <!-- Kontrol Butonları -->
+            <div class="timer-controls">
+                <button id="resetBtn" class="control-btn secondary" title="Sıfırla (R)" aria-label="Sıfırla">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+                </button>
+                <button id="startPauseBtn" class="control-btn primary">
+                    <span id="startPauseText">BAŞLAT</span>
+                </button>
+                <button id="skipBtn" class="control-btn secondary" title="Sonraki Aşamaya Geç" aria-label="Atla">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 4 15 12 5 20 5 4"></polygon><line x1="19" y1="5" x2="19" y2="19"></line></svg>
+                </button>
+            </div>
+
+            <!-- İstatistik Özeti -->
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <span class="stat-value" id="completedPomodoros">0</span>
+                    <span class="stat-title">Tamamlanan Pomodoro</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                    <span class="stat-value" id="totalFocusMinutes">0 dk</span>
+                    <span class="stat-title">Toplam Odaklanma</span>
+                </div>
+            </div>
+        </main>
+
+        <!-- Görevler Bölümü -->
+        <section class="tasks-section">
+            <div class="tasks-header">
+                <h2>Görevler</h2>
+                <button id="clearCompletedBtn" class="text-btn">Tamamlananları Temizle</button>
+            </div>
+
+            <form id="taskForm" class="task-form">
+                <input
+                    type="text"
+                    id="taskInput"
+                    class="task-input"
+                    placeholder="Üzerinde çalıştığın görevi yaz..."
+                    maxlength="80"
+                    required
+                />
+                <div class="pomo-est-group" title="Tahmini Pomodoro Sayısı">
+                    <span class="est-label">🍅</span>
+                    <input type="number" id="taskEstInput" class="est-input" value="1" min="1" max="20" />
+                </div>
+                <button type="submit" class="add-task-btn">Ekle</button>
+            </form>
+
+            <ul id="taskList" class="task-list"></ul>
+        </section>
+
+        <footer class="footer-hint">
+            Kısayollar: <kbd>Space</kbd> Başlat / Duraklat &bull; <kbd>R</kbd> Sıfırla
+        </footer>
+    </div>
+
+    <!-- Ayarlar Modalı -->
+    <div id="settingsModal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="settingsModalTitle">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 id="settingsModalTitle">Zamanlayıcı Ayarları</h3>
+                <button id="closeSettingsBtn" class="icon-btn" aria-label="Kapat">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="settings-group">
+                    <label class="group-title">Süreler (Dakika)</label>
+                    <div class="time-inputs">
+                        <div class="input-field">
+                            <label for="pomodoroInput">Odaklanma</label>
+                            <input type="number" id="pomodoroInput" min="1" max="120" value="25">
+                        </div>
+                        <div class="input-field">
+                            <label for="shortBreakInput">Kısa Mola</label>
+                            <input type="number" id="shortBreakInput" min="1" max="60" value="5">
+                        </div>
+                        <div class="input-field">
+                            <label for="longBreakInput">Uzun Mola</label>
+                            <input type="number" id="longBreakInput" min="1" max="90" value="15">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-row">
+                    <label for="longBreakIntervalInput">Uzun Mola Aralığı (Pomodoro sayısı)</label>
+                    <input type="number" id="longBreakIntervalInput" class="small-input" min="2" max="12" value="4">
+                </div>
+
+                <div class="settings-row">
+                    <label for="autoStartBreaksInput">Molaları Otomatik Başlat</label>
+                    <input type="checkbox" id="autoStartBreaksInput" class="toggle-checkbox">
+                </div>
+
+                <div class="settings-row">
+                    <label for="autoStartPomodorosInput">Pomodoro'ları Otomatik Başlat</label>
+                    <input type="checkbox" id="autoStartPomodorosInput" class="toggle-checkbox">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="saveSettingsBtn" class="save-btn">Kaydet</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
